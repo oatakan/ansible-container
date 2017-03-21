@@ -9,7 +9,7 @@ import importlib
 
 from jinja2 import Environment, FileSystemLoader
 
-from .exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
+from .common.exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
 from .config import AnsibleContainerConfig
 from .temp import MakeTempDir
 

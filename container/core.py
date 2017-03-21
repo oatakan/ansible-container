@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
-import logging
-
 from .visibility import getLogger
 logger = getLogger(__name__)
 
@@ -18,9 +16,9 @@ import time
 import requests
 from six.moves.urllib.parse import urljoin
 
-from .exceptions import AnsibleContainerException, \
-                        AnsibleContainerAlreadyInitializedException,\
-                        AnsibleContainerRegistryAttributeException
+from .common.exceptions import AnsibleContainerException, \
+    AnsibleContainerAlreadyInitializedException,\
+    AnsibleContainerRegistryAttributeException
 from .utils import *
 from . import __version__
 from .conductor.loader import load_engine
