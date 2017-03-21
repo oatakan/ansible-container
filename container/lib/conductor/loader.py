@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import logging
 import importlib
 
-from .visibility import getLogger
+from container.common.visibility import getLogger
 logger = getLogger(__name__)
 
 

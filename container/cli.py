@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from .visibility import getLogger
+from container.common.visibility import getLogger
 logger = getLogger(__name__)
 
 import os
@@ -14,7 +14,6 @@ from . import core
 from . import config
 from .common import exceptions
 from .utils import load_shipit_engine, AVAILABLE_SHIPIT_ENGINES
-from .conductor import exceptions as conductor_exc
 
 from logging import config
 LOGGING = {
@@ -259,7 +258,7 @@ def commandline():
     except exceptions.AnsibleContainerNoAuthenticationProvidedException:
         logger.error('No authentication provided, unable to continue', exc_info=True)
         sys.exit(1)
-    except conductor_exc.AnsibleContainerConductorException as e:
+    except exceptions.AnsibleContainerConductorException as e:
         logger.error('Failure in conductor container: %s' % e.message, exc_info=True)
         sys.exit(1)
     except exceptions.AnsibleContainerNoMatchingHosts:
