@@ -16,7 +16,7 @@ import subprocess
 
 import yaml
 
-from .loader import load_engine
+from container.common.loader import load_engine
 from .utils import get_role_fingerprint
 
 

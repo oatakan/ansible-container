@@ -7,7 +7,7 @@ from os import path
 import pytest
 
 from container.common.exceptions import AnsibleContainerNotInitializedException
-from container.utils import assert_initialized
+from container.common.utils import assert_initialized
 
 
 class TestMissingFiles(unittest.TestCase):

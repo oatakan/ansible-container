@@ -24,27 +24,6 @@ except ImportError:
 
 from container.common.exceptions import AnsibleContainerConductorException
 
-class MakeTempDir(object):
-    temp_dir = None
-
-    def __enter__(self):
-        self.temp_dir = tempfile.mkdtemp()
-        logger.debug('Using temporary directory', path=self.temp_dir)
-        return os.path.realpath(self.temp_dir)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            logger.debug('Cleaning up temporary directory',
-                path=self.temp_dir)
-            shutil.rmtree(self.temp_dir)
-        except Exception:
-            logger.error('Failure cleaning up temp space', path=self.temp_dir,
-                    exc_info=True)
-
-conductor_dir = os.path.normpath(os.path.dirname(__file__))
-
-make_temp_dir = MakeTempDir
-
 def jinja_render_to_temp(templates_path, template_file, temp_dir, dest_file, **context):
     j2_env = Environment(loader=FileSystemLoader(templates_path))
     j2_tmpl = j2_env.get_template(template_file)

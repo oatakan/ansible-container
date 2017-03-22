@@ -13,7 +13,7 @@ import requests.exceptions
 from . import core
 from . import config
 from .common import exceptions
-from .utils import load_shipit_engine, AVAILABLE_SHIPIT_ENGINES
+from container.common.utils import load_shipit_engine, AVAILABLE_SHIPIT_ENGINES
 
 from logging import config
 LOGGING = {

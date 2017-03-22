@@ -19,9 +19,9 @@ from six.moves.urllib.parse import urljoin
 from .common.exceptions import AnsibleContainerException, \
     AnsibleContainerAlreadyInitializedException,\
     AnsibleContainerRegistryAttributeException
-from .utils import *
+from container.common.utils import *
 from . import __version__
-from .conductor.loader import load_engine
+from container.common.utils import load_engine
 
 REMOVE_HTTP = re.compile('^https?://')
 DEFAULT_CONDUCTOR_BASE = 'centos:7'
@@ -160,11 +160,6 @@ def cmdrun_run(base_path, project_name, engine_name, var_file=None, cache=True,
     engine_obj = load_engine(['RUN'],
                              engine_name, project_name or os.path.basename(base_path),
                              config['services'], **kwargs)
-    if not engine_obj.CAP_RUN:
-        msg = u'{} does not support building the Conductor image.'.format(
-            engine_obj.display_name)
-        logger.error(msg, engine=engine_obj.display_name)
-        raise Exception(msg)
 
     for service in engine_obj.services:
         if not engine_obj.service_is_running(service):

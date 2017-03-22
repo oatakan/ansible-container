@@ -1,31 +1,46 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from __future__ import unicode_literals
 
-from container.common.visibility import getLogger
+from ..common.visibility import getLogger
 logger = getLogger(__name__)
 
+import functools
+import inspect
 import os
 import importlib
 
 from jinja2 import Environment, FileSystemLoader
 
-from .common.exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
-from .config import AnsibleContainerConfig
-from .temp import MakeTempDir
+from container.common.exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
+from container.config import AnsibleContainerConfig
+from container.common.temp import MakeTempDir
 
 
-__all__ = ['AVAILABLE_SHIPIT_ENGINES',
-           'assert_initialized',
-           'create_path',
-           'config_format_version',
-           'get_config',
-           'get_latest_image_for',
-           'jinja_render_to_temp',
-           'jinja_template_path',
-           'load_engine',
-           'load_shipit_engine',
-           'make_temp_dir',
-           ]
+def log_runs(fn):
+    @functools.wraps(fn)
+    def __wrapped__(self, *args, **kwargs):
+        logger.debug(
+            u'Call: %s.%s' % (type(self).__name__, fn.__name__),
+            # because log_runs is a decorator, we need to override the caller
+            # line & function
+            caller_func='%s.%s' % (type(self).__name__, fn.__name__),
+            caller_line=inspect.getsourcelines(fn)[-1],
+            args=args,
+            kwargs=kwargs,
+        )
+        return fn(self, *args, **kwargs)
+    return __wrapped__
+
+
+CAPABILITIES = dict(
+    BUILD='building container images',
+    BUILD_CONDUCTOR='building the Conductor image',
+    DEPLOY='pushing and orchestrating containers remotely',
+    IMPORT='importing as Ansible Container project',
+    LOGIN='authenticate with registry',
+    PUSH='push images to registry',
+    RUN='orchestrating containers locally',
+ )
 
 AVAILABLE_SHIPIT_ENGINES = {
     'kube': {
