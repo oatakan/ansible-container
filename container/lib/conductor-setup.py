@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 import conductor
+import os
 
 setup(
     name='ansible-container-conductor',
     version=conductor.__version__,
     packages=['conductor', 'container.common'],
-    package_dir={'': 'container/lib',
-                 'container': 'container'},
+    package_dir={'container': os.path.normpath('../..')},
     include_package_data=True,
     url='https://github.com/ansible/ansible-container',
     license='LGPLv3 (See LICENSE file for terms)',

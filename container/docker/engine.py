@@ -148,16 +148,9 @@ class Engine(BaseEngine, DockerEngineUtilityMixin):
                         arcname='contrib/get-pip.py')
 
             import container
-            conductor_dir = os.path.join(os.path.dirname(container.__file__),
-                                         'lib', 'conductor')
+            src_dir = os.path.dirname(container.__file__)
 
-            tarball.add(conductor_dir, arcname='conductor-src/conductor')
-            tarball.add(os.path.join(os.path.dirname(conductor_dir),
-                                     'conductor-setup.py'),
-                        arcname='conductor-src/setup.py')
-            tarball.add(os.path.join(os.path.dirname(conductor_dir),
-                                     'conductor-requirements.txt'),
-                        arcname='conductor-src/requirements.txt')
+            tarball.add(src_dir, arcname='container-src')
 
             utils.jinja_render_to_temp(TEMPLATES_PATH,
                                        'conductor-dockerfile.j2', temp_dir,
