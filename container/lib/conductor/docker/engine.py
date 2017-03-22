@@ -12,7 +12,6 @@ import datetime
 import json
 import os
 import re
-import tarfile
 
 try:
     import httplib as StatusCodes
@@ -43,7 +42,15 @@ DOCKER_CONFIG_FILEPATH_CASCADE = [
 REMOVE_HTTP = re.compile('^https?://')
 
 
-class Engine(BaseEngine, DockerEngineUtilityMixin):
+class Engine(DockerEngineUtilityMixin, BaseEngine):
+
+    CAP_BUILD_CONDUCTOR = True
+    CAP_BUILD = True
+    CAP_DEPLOY = True
+    CAP_IMPORT = True
+    CAP_LOGIN = True
+    CAP_PUSH = True
+    CAP_RUN = True
 
     @property
     def ansible_args(self):

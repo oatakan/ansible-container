@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import
 
 from datetime import datetime
 
@@ -14,7 +14,8 @@ import importlib
 from jinja2 import Environment, FileSystemLoader
 from distutils import dir_util
 
-from container.common.exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
+from container.common.exceptions import AnsibleContainerException, \
+    AnsibleContainerNotInitializedException
 from container.config import AnsibleContainerConfig
 from container.common.temp import MakeTempDir
 
@@ -73,14 +74,14 @@ def jinja_template_path():
             os.path.dirname(__file__),
             'templates'))
 
-def jinja_render_to_temp(template_file, temp_dir, dest_file, **context):
-    j2_tmpl_path = jinja_template_path()
-    j2_env = Environment(loader=FileSystemLoader(j2_tmpl_path))
+def jinja_render_to_temp(templates_path, template_file, temp_dir, dest_file, **context):
+    j2_env = Environment(loader=FileSystemLoader(templates_path))
     j2_tmpl = j2_env.get_template(template_file)
     rendered = j2_tmpl.render(dict(temp_dir=temp_dir, **context))
-    logger.debug('Rendered Jinja Template:', body=rendered.encode('utf8'))
+    logger.debug('Rendered Jinja Template:', rendered=rendered.encode('utf8'))
     open(os.path.join(temp_dir, dest_file), 'wb').write(
         rendered.encode('utf8'))
+
 
 def get_config(base_path, var_file=None):
     return AnsibleContainerConfig(base_path, var_file=var_file)
@@ -114,41 +115,6 @@ def get_latest_image_for(project_name, host, client):
     except (IndexError, ValueError):
         # No previous image built
         return None, None
-
-def load_engine(engine_name='', base_path='', **kwargs):
-    """
-
-    :param engine_name: the string for the module containing the engine.py code
-    :param base_path: the base path during operation
-    :return: container.engine.BaseEngine
-    """
-    mod = importlib.import_module('container.%s.engine' % engine_name)
-    project_name = os.path.basename(base_path).lower()
-    logger.debug('Engine loaded for project', name=project_name, path=base_path)
-    return mod.Engine(base_path, project_name, kwargs)
-
-
-def load_shipit_engine(engine_class, **kwargs):
-    '''
-    Given a class name, dynamically load a shipit engine.
-
-    :param engine_class: name of the shipit engine class
-    :param kwargs: key/value args to pass to the new shipit engine obj.
-    :return: shipit engine object
-    '''
-    try:
-        engine_module = importlib.import_module(
-            'container.shipit.%s.engine' % engine_class)
-    except ImportError as exc:
-        raise ImportError(
-            'No shipit module for %s found - %s' % (engine_class, str(exc)))
-    try:
-        engine_cls = getattr(engine_module, 'ShipItEngine')
-    except Exception as exc:
-        raise ImportError('Error getting ShipItEngine for %s - %s' % (engine_class, str(exc)))
-
-    return engine_cls(**kwargs)
-
 
 def create_role_from_templates(role_name=None, role_path=None,
                                project_name=None, description=None):

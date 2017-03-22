@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import logging
 plainLogger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ FILES_PATH = os.path.normpath(
         'files'))
 
 
-class Engine(BaseEngine, DockerEngineUtilityMixin):
+class Engine(DockerEngineUtilityMixin, BaseEngine):
     CAP_BUILD_CONDUCTOR = True
     CAP_BUILD = True
     CAP_DEPLOY = True

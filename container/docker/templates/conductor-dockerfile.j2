@@ -35,7 +35,7 @@ RUN ( test -f /_ansible/build/ansible-requirements.txt && pip install --no-cache
 COPY /container-src /_ansible/container
 RUN cd /_ansible/container/lib && \
     pip install --no-cache-dir -r conductor-requirements.txt && \
-    python conductor-setup.py develop
+    python conductor-setup.py install
 VOLUME /usr
 
 

@@ -15,12 +15,12 @@ except ImportError:
     package = 'container'
 else:
     package = 'conductor'
+logger.info('Engine loader looking in %s for engines', package)
 
 def load_engine(capabilities_needed, engine_name, project_name,
                 services=[], **kwargs):
     logger.debug(u"Loading engine capabilities", capabilities=capabilities_needed, engine=engine_name)
-    mod = importlib.import_module('.%s.engine' % engine_name,
-                                  package=package)
+    mod = importlib.import_module('%s.%s.engine' % (package, engine_name))
     engine_obj = mod.Engine(project_name, services, **kwargs)
     for capability in capabilities_needed:
         if not getattr(engine_obj, 'CAP_%s' % capability):

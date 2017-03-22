@@ -19,9 +19,9 @@ from six.moves.urllib.parse import urljoin
 from .common.exceptions import AnsibleContainerException, \
     AnsibleContainerAlreadyInitializedException,\
     AnsibleContainerRegistryAttributeException
-from container.common.utils import *
+from .common.utils import *
+from .common.loader import load_engine
 from . import __version__
-from container.common.utils import load_engine
 
 REMOVE_HTTP = re.compile('^https?://')
 DEFAULT_CONDUCTOR_BASE = 'centos:7'
@@ -100,7 +100,8 @@ def cmdrun_init(base_path, project=None, **kwargs):
                                         os.path.basename(base_path))
         }
         for tmpl_filename in os.listdir(template_dir):
-            jinja_render_to_temp(os.path.join('init', tmpl_filename),
+            jinja_render_to_temp(template_dir,
+                                 tmpl_filename,
                                  base_path,
                                  tmpl_filename.replace('.j2', ''),
                                  **context)

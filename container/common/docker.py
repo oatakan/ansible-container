@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import
 
 from ..common.visibility import getLogger
 logger = getLogger(__name__)
@@ -7,7 +7,8 @@ logger = getLogger(__name__)
 try:
     import docker
     from docker import errors as docker_errors
-except ImportError:
+except ImportError, e:
+    logger.debug('Import error: %s', e)
     raise ImportError('Use of this engine requires you "pip install \'docker>=2.1\'" first.')
 
 from . import exceptions
