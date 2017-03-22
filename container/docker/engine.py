@@ -210,3 +210,11 @@ class Engine(BaseEngine, DockerEngineUtilityMixin):
                                                  nocache=not cache)
                 return image.id
 
+    def import_project(self, base_path, import_from, bundle_files=False, **kwargs):
+        from .importer import DockerfileImport
+
+        dfi = DockerfileImport(base_path,
+                               self.project_name,
+                               import_from,
+                               bundle_files)
+        dfi.run()

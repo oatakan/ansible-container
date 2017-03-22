@@ -209,14 +209,6 @@ class Engine(BaseEngine, DockerEngineUtilityMixin):
             raise ValueError('Runtime volume not found on Conductor')
         return usr_mount['Name']
 
-    def import_project(self, base_path, import_from, bundle_files=False, **kwargs):
-        from .importer import DockerfileImport
-
-        dfi = DockerfileImport(base_path,
-                               self.project_name,
-                               import_from,
-                               bundle_files)
-        dfi.run()
 
     def login(self, username, password, email, url, config_path):
         """

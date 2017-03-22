@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from ..common.visibility import getLogger
 logger = getLogger(__name__)
 
@@ -10,6 +12,7 @@ import os
 import importlib
 
 from jinja2 import Environment, FileSystemLoader
+from distutils import dir_util
 
 from container.common.exceptions import AnsibleContainerException, AnsibleContainerNotInitializedException
 from container.config import AnsibleContainerConfig
@@ -147,3 +150,44 @@ def load_shipit_engine(engine_class, **kwargs):
     return engine_cls(**kwargs)
 
 
+def create_role_from_templates(role_name=None, role_path=None,
+                               project_name=None, description=None):
+    '''
+    Create a new role with initial files from templates.
+    :param role_name: Name of the role
+    :param role_path: Full path to the role
+    :param project_name: Name of the project, or the base path name.
+    :param description: One line description of the role.
+    :return: None
+    '''
+    context = locals()
+    templates_path = os.path.join(os.path.dirname(__file__), 'templates', 'role')
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%s')
+
+    logger.debug('Role template location', path=templates_path)
+    for rel_path, templates in [(os.path.relpath(path, templates_path), files)
+                                for (path, _, files) in os.walk(templates_path)]:
+        target_dir = os.path.join(role_path, rel_path)
+        dir_util.mkpath(target_dir)
+        for template in templates:
+            template_rel_path = os.path.join(rel_path, template)
+            target_name = template.replace('.j2', '')
+            target_path = os.path.join(target_dir, target_name)
+            if os.path.exists(target_path):
+                backup_path = u'%s_%s' % (target_path, timestamp)
+                logger.debug(u'Found existing file. Backing target to backup',
+                    target=target_path, backup=backup_path)
+                os.rename(target_path, backup_path)
+            logger.debug("Rendering template for %s/%s" % (target_dir, template))
+            jinja_render_to_temp(templates_path,
+                                 template_rel_path,
+                                 target_dir,
+                                 target_name,
+                                 **context)
+
+    new_file_name = "main_{}.yml".format(datetime.today().strftime('%y%m%d%H%M%S'))
+    new_tasks_file = os.path.join(role_path, 'tasks', new_file_name)
+    tasks_file = os.path.join(role_path, 'tasks', 'main.yml')
+
+    if os.path.exists(tasks_file):
+        os.rename(tasks_file, new_tasks_file)
