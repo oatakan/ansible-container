@@ -97,7 +97,7 @@ class Service(BaseShipItObject):
 
         def _append_port(port, protocol):
             if not _port_in_list(port, protocol):
-                ports.append(dict(port=int(port), targetPort=int(port), protocol=protocol, name='port-%s-%s' % (port, protocol.upper())))
+                ports.append(dict(port=int(port), targetPort=int(port), protocol=protocol, name='port-%s' % (port)))
 
         for port in service.get('ports', []):
             protocol = 'TCP'

@@ -41,7 +41,7 @@ class Route(BaseShipItObject):
 
         if service_ports:
             for port in service_ports:
-                route_name = "%s-%s" % (name, port)
+                route_name = "%s-%s" % (name, port[1])
                 labels = dict(
                     app=self.project_name,
                     service=name
@@ -61,7 +61,7 @@ class Route(BaseShipItObject):
                                 name=name,
                             ),
                             port=dict(
-                                targetPort="port-%s" % port
+                                targetPort="port-%s" % port[0]
                             )
                         )
                     )
@@ -74,7 +74,7 @@ class Route(BaseShipItObject):
                             route_name=route_name,
                             labels=labels.copy(),
                             service_name=name,
-                            service_port="port-%s" % port,
+                            service_port="port-%s" % port[0],
                             replace=True,
                         )
                     )
@@ -101,7 +101,7 @@ class Route(BaseShipItObject):
         for port in service.get('ports', []):
             if isinstance(port, string_types) and ':' in port:
                 parts = port.split(':')
-                result.append(parts[0])
+                result.append(parts)
             else:
                 result.append(port)
         return result
