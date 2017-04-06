@@ -41,7 +41,7 @@ class Route(BaseShipItObject):
 
         if service_ports:
             for port in service_ports:
-                route_name = "%s-%s" % (name, port[1])
+                route_name = "%s-%s" % (name, port[0])
                 labels = dict(
                     app=self.project_name,
                     service=name
@@ -61,7 +61,7 @@ class Route(BaseShipItObject):
                                 name=name,
                             ),
                             port=dict(
-                                targetPort="port-%s" % port[0]
+                                targetPort="port-%s" % port[1]
                             )
                         )
                     )
@@ -74,7 +74,7 @@ class Route(BaseShipItObject):
                             route_name=route_name,
                             labels=labels.copy(),
                             service_name=name,
-                            service_port="port-%s" % port[0],
+                            service_port="port-%s" % port[1],
                             replace=True,
                         )
                     )
